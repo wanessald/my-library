@@ -1,34 +1,43 @@
 "use client";
 
-import { Book, db } from "@/lib/data/db";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { Book } from "@/app/types/book";
+import Image from "next/image";
 
 export default function BookDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (params.id) {
-      db.books.get(params.id).then((data) => {
-        if (data) setBook(data);
-      });
+      fetch(`/api/books/${params.id}`)
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => {
+          setBook(data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     }
   }, [params.id]);
 
   const handleDelete = async () => {
     if (!params.id) return;
-    await db.books.delete(params.id);
+    await fetch(`/api/books/${params.id}`, {
+      method: "DELETE",
+    });
     router.push("/estante");
   };
 
-  if (!book) return <p className="p-6 text-center">Carregando livro...</p>;
+  if (loading) return <p className="p-6 text-center">Carregando livro...</p>;
+  if (!book) return <p className="p-6 text-center">Livro não encontrado.</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="border rounded-lg shadow-md p-4">
-        <img
+        <Image
           src={book.cover || "/default-cover.png"}
           alt={book.title}
           className="w-full h-80 object-cover rounded-md mb-4"
@@ -36,8 +45,8 @@ export default function BookDetailPage() {
         />
 
         <h1 className="text-3xl font-bold mb-2">{book.title}</h1>
-        <p className="text-lg text-gray-700 mb-1"><strong>Autor:</strong> {book.author}</p>
-        <p className="text-lg text-gray-700 mb-1"><strong>Gênero:</strong> {book.genre || "Não informado"}</p>
+        <p className="text-lg text-gray-700 mb-1"><strong>Autor:</strong> {typeof book.author === "string" ? book.author : book.author?.name || "Desconhecido"}</p>
+        <p className="text-lg text-gray-700 mb-1"><strong>Gênero:</strong> {typeof book.genre || "Não informado"}</p>
         {book.year && <p className="text-lg text-gray-700 mb-1"><strong>Ano:</strong> {book.year}</p>}
         {book.pages && <p className="text-lg text-gray-700 mb-1"><strong>Páginas:</strong> {book.pages}</p>}
         {book.rating !== undefined && (

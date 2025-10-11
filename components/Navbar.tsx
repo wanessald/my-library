@@ -74,19 +74,19 @@ export default function NavbarClient() {
               href="/"
               className="px-4 py-2 hover:underline transition whitespace-nowrap flex items-center justify-center"
             >
-              Home
+              Inicio
             </Link>
             <Link
               href="/estante"
               className="px-4 py-2 hover:underline transition whitespace-nowrap flex items-center justify-center"
             >
-              My Library
+              Biblioteca
             </Link>
             <Link
               href="/dashboard"
               className="px-4 py-2 hover:underline transition whitespace-nowrap flex items-center justify-center"
             >
-              Dashboard
+              Painel
             </Link>
           </div>
         </div>

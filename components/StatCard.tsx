@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NumberTicker } from "@/components/ui/number-ticker";
-import { ReadingStatus } from "../types/book";
+import { ReadingStatus } from "../app/types/book";
 
 interface StatCardProps {
   label: string;

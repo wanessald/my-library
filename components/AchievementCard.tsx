@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lock } from "lucide-react";
-import type { Achievement } from "../types/achievement";
+import type { Achievement } from "../app/types/achievement";
 import { cn } from "@/lib/utils";
 import { achievementsData } from "@/lib/data/achievements";
 

@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  env:{LIBRARY_API_URL: process.env.LIBRARY_API_URL,
+  }
 };
 
 export default nextConfig;

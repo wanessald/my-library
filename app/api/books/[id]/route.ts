@@ -1,89 +1,73 @@
 import { NextRequest } from "next/server";
-import { booksData } from "@/lib/data/books";
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await context.params;
+    const parsedId = parseInt(id);
 
-    if (isNaN(id)) {
-      return Response.json(
-        {
-          success: false,
-          error: "Invalid ID format",
-        },
+    if (isNaN(parsedId)) {
+      return new Response(
+        JSON.stringify({ success: false, error: "ID inválido" }),
         { status: 400 }
       );
     }
 
-    const book = booksData.getById(id);
-
-    if (!book) {
-      return Response.json(
-        {
-          success: false,
-          error: "Book not found",
-        },
+    // Chamada real ao backend ou banco
+    const res = await fetch(`${process.env.LIBRARY_API_URL}${parsedId}`);
+    if (!res.ok) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Livro não encontrado" }),
         { status: 404 }
       );
     }
 
-    return Response.json({
-      success: true,
-      data: book,
-    });
-  } catch (error) {
-    return Response.json(
-      {
-        success: false,
-        error: "Failed to fetch book",
-      },
+    const data = await res.json();
+    return new Response(JSON.stringify({ success: true, data }));
+  } catch (err) {
+    console.error(err);
+    return new Response(
+      JSON.stringify({ success: false, error: "Erro ao buscar livro" }),
       { status: 500 }
     );
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await context.params;
+    const parsedId = parseInt(id);
 
-    if (isNaN(id)) {
-      return Response.json(
-        {
-          success: false,
-          error: "Invalid ID format",
-        },
+    if (isNaN(parsedId)) {
+      return new Response(
+        JSON.stringify({ success: false, error: "ID inválido" }),
         { status: 400 }
       );
     }
 
-    const deletedBook = booksData.delete(id);
+    const res = await fetch(`${process.env.LIBRARY_API_URL}${parsedId}`, {
+      method: "DELETE",
+    });
 
-    if (!deletedBook) {
-      return Response.json(
-        {
-          success: false,
-          error: "Book not found",
-        },
+    if (!res.ok) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Livro não encontrado" }),
         { status: 404 }
       );
     }
 
-    return Response.json({
-      success: true,
-      message: "Book deleted successfully",
-    });
-  } catch (error) {
-    return Response.json(
-      {
-        success: false,
-        error: "Failed to delete book",
-      },
+    return new Response(
+      JSON.stringify({ success: true, message: "Livro deletado com sucesso" })
+    );
+  } catch (err) {
+    console.error(err);
+    return new Response(
+      JSON.stringify({ success: false, error: "Erro ao deletar livro" }),
       { status: 500 }
     );
   }

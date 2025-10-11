@@ -1,16 +1,16 @@
 "use client";
 
 import { getDashboardStats } from "@/lib/data/dashboard";
-import StatCard from "./StatCard";
+import StatCard from "@/components/StatCard";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ReadingChart } from "@/components/reading-chart";
 import { ReadingGoals } from "@/components/reading-goals";
-import { PagesReadCard } from "./PagesReadCard";
-import { GenreCard } from "./GenreCard";
-import { CurrentReadingCard } from "./CurrentReading";
+import { PagesReadCard } from "@/components/PagesReadCard";
+import { GenreCard } from "@/components/GenreCard";
+import { CurrentReadingCard } from "@/components/CurrentReading";
 import { booksData } from "@/lib/data/books";
-import { AchievementCard } from "./AchievementCard";
+import { AchievementCard } from "@/components/AchievementCard";
 import { getAchievements } from "@/lib/data/achievements";
 import { Marquee } from "@/components/ui/marquee";
 

@@ -1,6 +1,7 @@
 import type { Book } from "@/app/types/book";
 
-let books: Book[] = [
+
+export const books: Book[] = [
   {
     id: 1,
     title: "Dom Casmurro",
@@ -97,7 +98,7 @@ let books: Book[] = [
       "Continuação da história de Kvothe, onde ele enfrenta desafios ainda maiores na Universidade e além.",
     cover:
       "https://m.media-amazon.com/images/I/91rGGj7JBhL._UF1000,1000_QL80_.jpg",
-    status: "QUERO_LER",
+    status: "QUERO LER",
   },
   {
     id: 8,
@@ -130,6 +131,33 @@ export const booksData = {
   // Buscar book por ID
   getById: (id: number): Book | undefined => {
     return books.find((book) => book.id === id);
+  },
+
+  // Criar novo livro
+  create: (bookData: Omit<Book, "id">): Book => {
+    const newBook: Book = {
+      id: generateId(),
+      ...bookData,
+    };
+
+    books.push(newBook);
+    return newBook;
+  },
+
+  // Atualizar livro (função put/update)
+  update: (id: number, updates: Partial<Book>): Book | null => {
+    const bookIndex = books.findIndex((book) => book.id === id);
+
+    if (bookIndex === -1) {
+      return null;
+    }
+
+    books[bookIndex] = {
+      ...books[bookIndex],
+      ...updates,
+    };
+
+    return books[bookIndex];
   },
 
   // Deletar book
