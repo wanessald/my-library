@@ -13,28 +13,28 @@ import type { Book, ReadingStatus, Genre } from "@/app/types/book";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "@/lib/api";
 
 interface EditBookClientProps {
   id: string;
 }
 
-export default function EditBookClient({ id }: EditBookClientProps) {
+export default function EditBookForm({ id }: EditBookClientProps) {
   const router = useRouter();
   const [book, setBook] = useState<Omit<Book, "id"> | null>(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Busca o livro e os gêneros da API
     const fetchData = async () => {
       try {
         const [bookRes, genresRes] = await Promise.all([
-          fetch(`${"/api/books"}/${id}`),
-          fetch("/api/genres"),
+          fetch(`${API_BASE_URL}/books/${id}`),
+          fetch(`${API_BASE_URL}/genres`),
         ]);
-        const bookData = (await bookRes.json()).data as Book;
+        const bookData = (await bookRes.json()) as Book;
         const genresData = (await genresRes.json()) as Genre[];
-         setBook({
+        setBook({
           title: bookData.title || "",
           author: bookData.author || { id: "", name: "" },
           genre: bookData.genre || { id: "", genre: "" },
@@ -47,8 +47,8 @@ export default function EditBookClient({ id }: EditBookClientProps) {
           currentPage: bookData.currentPage || 0,
           isbn: bookData.isbn || "",
           notes: bookData.notes || "",
-          createdAt: bookData.createdAt || new Date(),
-          updatedAt: bookData.updatedAt || new Date(),
+          createdAt: new Date(bookData.createdAt),
+          updatedAt: new Date(bookData.updatedAt),
         });
         setGenres(genresData);
       } catch {
@@ -64,12 +64,12 @@ export default function EditBookClient({ id }: EditBookClientProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (book) {
-      await fetch(`${"/api/books"}/${id}`, {
+      await fetch(`${API_BASE_URL}/books/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(book),
       });
-      router.push("/estante");
+      router.push("/bookshelf");
     }
   };
 
@@ -91,7 +91,10 @@ export default function EditBookClient({ id }: EditBookClientProps) {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Autor *</label>
-            <Input required value={book.author?.name || ""}  onChange={(e) =>
+            <Input
+              required
+              value={book.author?.name || ""}
+              onChange={(e) =>
                 setBook({
                   ...book,
                   author: { ...book.author, name: e.target.value },
@@ -115,9 +118,15 @@ export default function EditBookClient({ id }: EditBookClientProps) {
               </SelectTrigger>
               <SelectContent>
                 {genres.length === 0 ? (
-                  <SelectItem value="Carregando" disabled>Carregando...</SelectItem>
+                  <SelectItem value="Carregando" disabled>
+                    Carregando...
+                  </SelectItem>
                 ) : (
-                  genres.map((g) => <SelectItem key={g.id} value={g.genre}>{g.genre}</SelectItem>)
+                  genres.map((g) => (
+                    <SelectItem key={g.id} value={g.genre}>
+                      {g.genre}
+                    </SelectItem>
+                  ))
                 )}
               </SelectContent>
             </Select>
@@ -169,7 +178,13 @@ export default function EditBookClient({ id }: EditBookClientProps) {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">ISBN</label>
-            <Input type="text" value={book.isbn ?? ""} onChange={(e) => setBook({ ...book, isbn: String(e.target.value) })} />
+            <Input
+              type="text"
+              value={book.isbn ?? ""}
+              onChange={(e) =>
+                setBook({ ...book, isbn: String(e.target.value) })
+              }
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Notas</label>
@@ -180,10 +195,8 @@ export default function EditBookClient({ id }: EditBookClientProps) {
               onChange={(e) => setBook({ ...book, notes: e.target.value })}
             />
           </div>
-           <div>
-            <label className="block text-sm font-medium mb-1">
-              Criado em
-            </label>
+          <div>
+            <label className="block text-sm font-medium mb-1">Criado em</label>
             <Input
               type="date"
               disabled
@@ -232,6 +245,9 @@ export default function EditBookClient({ id }: EditBookClientProps) {
           </label>
           <Image
             src={book.cover || "/default-cover.png"}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            width={120}
+            height={180}
             alt="Preview da Capa"
             className="w-40 h-60 object-contain border rounded"
           />
@@ -242,7 +258,7 @@ export default function EditBookClient({ id }: EditBookClientProps) {
           <Button
             variant="outline"
             type="button"
-            onClick={() => router.push("/estante")}
+            onClick={() => router.push("/bookshelf")}
           >
             Cancelar
           </Button>

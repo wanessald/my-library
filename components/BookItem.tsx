@@ -30,7 +30,6 @@ export default function BookItem({
   isLoading = false,
 }: BookItemProps) {
   const [imageError, setImageError] = useState(false);
-  const [hovered, setHovered] = useState(false);
   const router = useRouter();
 
   const handleImageError = () => {
@@ -44,10 +43,11 @@ export default function BookItem({
       aria-label={`Livro: ${book.title} por ${book.author}`}
     >
       <div className="relative w-full aspect-[3/4] overflow-hidden bg-gray-100 flex items-center justify-center">
-        {" "}
         <Image
-          src={imageError ? "/default-cover.png" : book.cover}
+          src={book.cover || "/default-cover.png"}
           alt={`Capa do livro ${book.title}`}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={handleImageError}
           loading="lazy"
@@ -95,7 +95,7 @@ export default function BookItem({
             size="sm"
             variant="ghost"
             className="text-xs h-7 px-2 min-w-0 flex-1"
-            onClick={() => router.push(`/estante/${book.id}`)}
+            onClick={() => router.push(`/bookshelf/${book.id}`)}
             aria-label={`Visualizar detalhes do livro ${book.title}`}
             title="Visualizar"
           >
@@ -105,7 +105,7 @@ export default function BookItem({
             size="sm"
             variant="ghost"
             className="h-7 flex-1 text-xs"
-            onClick={() => router.push(`/estante/${book.id}/edit`)}
+            onClick={() => router.push(`/bookshelf/${book.id}/edit`)}
             aria-label={`Editar informações do livro ${book.title}`}
             title="Editar livro"
           >

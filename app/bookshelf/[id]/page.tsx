@@ -14,7 +14,7 @@ export default function BookDetailPage() {
   useEffect(() => {
     if (params.id) {
       fetch(`/api/books/${params.id}`)
-        .then((res) => res.ok ? res.json() : null)
+        .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           setBook(data);
           setLoading(false);
@@ -45,19 +45,39 @@ export default function BookDetailPage() {
         />
 
         <h1 className="text-3xl font-bold mb-2">{book.title}</h1>
-        <p className="text-lg text-gray-700 mb-1"><strong>Autor:</strong> {typeof book.author === "string" ? book.author : book.author?.name || "Desconhecido"}</p>
-        <p className="text-lg text-gray-700 mb-1"><strong>Gênero:</strong> {typeof book.genre || "Não informado"}</p>
-        {book.year && <p className="text-lg text-gray-700 mb-1"><strong>Ano:</strong> {book.year}</p>}
-        {book.pages && <p className="text-lg text-gray-700 mb-1"><strong>Páginas:</strong> {book.pages}</p>}
-        {book.rating !== undefined && (
+        <p className="text-lg text-gray-700 mb-1">
+          <strong>Autor:</strong>{" "}
+          {typeof book.author === "string"
+            ? book.author
+            : book.author?.name || "Desconhecido"}
+        </p>
+        <p className="text-lg text-gray-700 mb-1">
+          <strong>Gênero:</strong> {typeof book.genre || "Não informado"}
+        </p>
+        {book.year && (
           <p className="text-lg text-gray-700 mb-1">
-            <strong>Avaliação:</strong> {book.rating > 0 ? `${book.rating}/5` : "Ainda não avaliado"}
+            <strong>Ano:</strong> {book.year}
           </p>
         )}
-        <p className="text-lg text-gray-700 mb-1"><strong>Status:</strong> {book.status}</p>
+        {book.pages && (
+          <p className="text-lg text-gray-700 mb-1">
+            <strong>Páginas:</strong> {book.pages}
+          </p>
+        )}
+        {book.rating !== undefined && (
+          <p className="text-lg text-gray-700 mb-1">
+            <strong>Avaliação:</strong>{" "}
+            {book.rating > 0 ? `${book.rating}/5` : "Ainda não avaliado"}
+          </p>
+        )}
+        <p className="text-lg text-gray-700 mb-1">
+          <strong>Status:</strong> {book.status}
+        </p>
 
         <h2 className="text-2xl font-semibold mt-4 mb-2">Sinopse</h2>
-        <p className="text-gray-600 mb-6">{book.synopsis || "Nenhuma sinopse cadastrada."}</p>
+        <p className="text-gray-600 mb-6">
+          {book.synopsis || "Nenhuma sinopse cadastrada."}
+        </p>
 
         <div className="flex gap-4">
           <button

@@ -77,7 +77,7 @@ export default function NavbarClient() {
               Inicio
             </Link>
             <Link
-              href="/estante"
+              href="/bookshelf"
               className="px-4 py-2 hover:underline transition whitespace-nowrap flex items-center justify-center"
             >
               Biblioteca
@@ -118,7 +118,7 @@ export default function NavbarClient() {
                 Home
               </Link>
               <Link
-                href="/estante"
+                href="/bookshelf"
                 className="rounded-lg px-3 py-2 hover:underline hover:bg-muted transition"
                 onClick={() => setMenuOpen(false)}
               >
