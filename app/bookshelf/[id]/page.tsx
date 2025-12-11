@@ -1,5 +1,6 @@
 "use client";
 
+import { API_BASE_URL } from "@/lib/api";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Book } from "@/app/types/book";
@@ -13,7 +14,7 @@ export default function BookDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`/api/books/${params.id}`)
+      fetch(`${API_BASE_URL}/books/${params.id}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           setBook(data);
@@ -25,10 +26,10 @@ export default function BookDetailPage() {
 
   const handleDelete = async () => {
     if (!params.id) return;
-    await fetch(`/api/books/${params.id}`, {
+    await fetch(`${API_BASE_URL}/books/${params.id}`, {
       method: "DELETE",
     });
-    router.push("/estante");
+    router.push("/bookshelf");
   };
 
   if (loading) return <p className="p-6 text-center">Carregando livro...</p>;
@@ -39,6 +40,9 @@ export default function BookDetailPage() {
       <div className="border rounded-lg shadow-md p-4">
         <Image
           src={book.cover || "/default-cover.png"}
+          width={80}
+          height={300}
+          priority={true}
           alt={book.title}
           className="w-full h-80 object-cover rounded-md mb-4"
           onError={(e) => (e.currentTarget.src = "/default-cover.png")}
@@ -81,7 +85,7 @@ export default function BookDetailPage() {
 
         <div className="flex gap-4">
           <button
-            onClick={() => router.push(`/estante/${book.id}/edit`)}
+            onClick={() => router.push(`/bookshelf/${book.id}/edit`)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Editar
@@ -93,7 +97,7 @@ export default function BookDetailPage() {
             Excluir
           </button>
           <button
-            onClick={() => router.push("/estante")}
+            onClick={() => router.push("/bookshelf")}
             className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
           >
             Voltar
