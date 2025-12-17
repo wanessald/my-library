@@ -56,7 +56,10 @@ export default function BookDetailPage() {
             : book.author?.name || "Desconhecido"}
         </p>
         <p className="text-lg text-gray-700 mb-1">
-          <strong>Gênero:</strong> {typeof book.genre || "Não informado"}
+          <strong>Gênero:</strong>
+          {typeof book.genre === "string"
+            ? book.genre
+            : book.genre?.genre || "Não informado"}
         </p>
         {book.year && (
           <p className="text-lg text-gray-700 mb-1">
